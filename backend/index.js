@@ -7,7 +7,7 @@ import path from "path";
 
 import { connectDB } from "./db.js";
 import authRoutes from "./routes/auth.route.js";
-
+import employeeCodeRoutes from './routes/employeeCode.routes.js';
 
 dotenv.config();
 
@@ -48,6 +48,7 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'SamoGuru API Server is running' });
 });
 
+app.use('/api/employee-codes', employeeCodeRoutes);
 
 // Register routes
 app.use("/api/auth", authRoutes);
