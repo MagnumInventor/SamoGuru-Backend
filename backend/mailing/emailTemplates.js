@@ -230,10 +230,10 @@ export const WELCOME_EMAIL_TEMPLATE = `
     <div style="background-color: #eff6ff; padding: 24px; border-radius: 8px; border: 1px solid #bfdbfe; margin: 30px 0;">
       <h3 style="color: #1d4ed8; font-size: 16px; font-weight: 600; margin: 0 0 16px 0;">Перші кроки:</h3>
       <ul style="color: #1e40af; margin: 0; padding-left: 20px;">
+          <li style="margin-bottom: 0;">Зверніться до свого керівника/адміністратора з повідомленням про успішну реєстрацію</li>
         <li style="margin-bottom: 8px;">Увійдіть до системи та заповніть свій профіль</li>
         <li style="margin-bottom: 8px;">Ознайомтеся з правилами та процедурами</li>
         <li style="margin-bottom: 8px;">Перегляньте свій розклад роботи</li>
-        <li style="margin-bottom: 0;">Зверніться до свого керівника з будь-якими питаннями</li>
       </ul>
     </div>
 
