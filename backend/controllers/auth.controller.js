@@ -1,4 +1,4 @@
-//backend/controllers/auth.controller.js
+//backend/controllers/auth.controller.js employeeCode.controller.js
 import bcryptjs from 'bcryptjs';
 import crypto from 'crypto';
 
@@ -7,20 +7,64 @@ import { generateVerificationToken } from '../utils/generateVerificationToken.js
 import { generateTokenAndSetCookie } from '../utils/generateTokenAndSetCookie.js';
 import { testBrevoConnection, sendPasswordResetEmail, sendResetSuccessEmail, sendVerificationEmail, sendWelcomeEmail } from '../mailing/emails.js';
 
+const ADMIN_REGISTRATION_CODE = process.env.ADMIN_REGISTRATION_CODE || "ADMIN2025_SECRET";
 
-// Реєстрація
+// Реєстрація (ОНОВЛЕНА для первинної реєстраці з кодом працівника) 
 export const signup = async (req, res) => {
-    const { email, firstName, password, role = USER_ROLES.TRAINEE } = req.body; // Додаємо role з дефолтним значенням
+    const { 
+        email, 
+        firstName, 
+        password, 
+        role = USER_ROLES.TRAINEE,
+        employeeCode, // Код працівника
+        adminCode     // Адміністраторський код (тільки для адмінів)
+    } = req.body;
     
     try {
         // Валідація обов'язкових полів
         if(!email || !firstName || !password) {
             throw new Error("Введіть дані в усі обов'язкові поля!");
         }
+
         // Перевірка на існуючого користувача
         const userAlreadyExists = await User.findOne({ email });
         if(userAlreadyExists) {
-            return res.status(400).json({success: false, message: "Користувач вже існує!"});
+            return res.status(400).json({
+                success: false, 
+                message: "Користувач вже існує!"
+            });
+        }
+
+        // Логіка для адміністраторів
+        if (role === USER_ROLES.ADMIN) {
+            if (!adminCode || adminCode !== ADMIN_REGISTRATION_CODE) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Недійсний адміністраторський код"
+                });
+            }
+        } 
+        // Логіка для звичайних працівників
+        else {
+            if (!employeeCode) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Код працівника обов'язковий"
+                });
+            }
+
+            // Перевірка коду працівника
+            const validCode = await EmployeeCode.findOne({ 
+                code: employeeCode,
+                isUsed: false 
+            });
+
+            if (!validCode) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Недійсний або вже використаний код працівника"
+                });
+            }
         }
 
         // Хешування пароля
@@ -39,6 +83,18 @@ export const signup = async (req, res) => {
         });
 
         await user.save();
+
+        // Позначити код як використаний (тільки для звичайних працівників)
+        if (role !== USER_ROLES.ADMIN && employeeCode) {
+            await EmployeeCode.findOneAndUpdate(
+                { code: employeeCode },
+                { 
+                    isUsed: true,
+                    usedBy: user._id,
+                    usedAt: new Date()
+                }
+            );
+        }
 
         // Генерація JWT та кукі
         generateTokenAndSetCookie(res, user._id);
