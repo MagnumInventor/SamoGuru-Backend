@@ -48,12 +48,12 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'SamoGuru API Server is running' });
 });
 
-app.use('/api/employee-codes', employeeCodeRoutes);
+app.use('/api/employee-codes', employeeCodeRoutes); // <-- Make sure this is BEFORE the 404 handler
 
 // Register routes
 app.use("/api/auth", authRoutes);
 
-// Handle API 404s
+// Handle API 404s (should be after all API routes)
 app.use('/api/*', (req, res) => {
   res.status(404).json({ error: 'API endpoint not found' });
 });
@@ -131,3 +131,7 @@ app.listen(PORT, () => {
   connectDB();
   console.log("Server is running on port:", PORT);
 });
+
+console.log('Registered routes:');
+console.log('/api/employee-codes');
+console.log('/api/auth');
