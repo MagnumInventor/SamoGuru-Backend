@@ -77,7 +77,7 @@ if (process.env.NODE_ENV === 'production') {
         res.sendFile(indexPath);
       });
     } else {
-      // Fallback: serve a simple message if Next.js build is not available
+      // Коментуємо цей блок, щоб уникнути конфлікту з API маршрутами
       app.get('*', (req, res) => {
         if (!req.path.startsWith('/api/')) {
           res.send(`
@@ -93,21 +93,21 @@ if (process.env.NODE_ENV === 'production') {
             </head>
             <body>
               <div class="container">
-                <h1>🚀 SamoGuru API Server</h1>
-                <p>The API server is running successfully!</p>
+                <h1>🚀 Сервер СамоГуру</h1>
+                <p>Функції реєстрації та API справно праюють!</p>
                 <div class="api-info">
-                  <h3>Available API Endpoints:</h3>
+                  <h3>Достуні API Endpoints:</h3>
                   <ul>
-                    <li><strong>POST</strong> /api/auth/signup - User registration</li>
-                    <li><strong>POST</strong> /api/auth/login - User login</li>
-                    <li><strong>POST</strong> /api/auth/logout - User logout</li>
-                    <li><strong>POST</strong> /api/auth/verify-email - Email verification</li>
-                    <li><strong>POST</strong> /api/auth/forgot-password - Password reset request</li>
-                    <li><strong>POST</strong> /api/auth/reset-password/:token - Password reset</li>
-                    <li><strong>GET</strong> /api/auth/check-auth - Check authentication</li>
+                    <li><strong>POST</strong> /api/auth/signup - Реєстрація</li>
+                    <li><strong>POST</strong> /api/auth/login - Вхід</li>
+                    <li><strong>POST</strong> /api/auth/logout - Вихід</li>
+                    <li><strong>POST</strong> /api/auth/verify-email - Емейл верификація</li>
+                    <li><strong>POST</strong> /api/auth/forgot-password - Скидання пароля</li>
+                    <li><strong>POST</strong> /api/auth/reset-password/:token - Відновлення пароля</li>
+                    <li><strong>GET</strong> /api/auth/check-auth - Перевірка аутинтифікації</li>
                   </ul>
                 </div>
-                <p><em>Frontend application is being built or is not available.</em></p>
+                <p><em>Клієнтська сторона додатку працює на наступному домені: www.samoguru.run.place </em></p>
               </div>
             </body>
             </html>
