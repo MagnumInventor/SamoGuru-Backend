@@ -29,4 +29,11 @@ router.delete('/:codeId', deleteEmployeeCode);
 // Отримання всіх кодів (тільки адміни)
 router.get('/all', getAllEmployeeCodes);
 
+// Додати GET / для інформування про правильний endpoint
+router.get('/', (req, res) => {
+    res.status(400).json({
+        error: "Use /api/employee-codes/all to fetch all employee codes"
+    });
+});
+
 export default router;
