@@ -8,6 +8,7 @@ import path from "path";
 import { connectDB } from "./db.js";
 import authRoutes from "./routes/auth.route.js";
 import employeeCodeRoutes from './routes/employeeCode.routes.js';
+import scheduleRoutes from './routes/schedule.routes.js';
 
 dotenv.config();
 
@@ -48,7 +49,8 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'SamoGuru API Server is running' });
 });
 
-app.use('/api/employee-codes', employeeCodeRoutes); // <-- Make sure this is BEFORE the 404 handler
+app.use('/api/employee-codes', employeeCodeRoutes);
+app.use('/api/schedule', scheduleRoutes); // <-- Add this line
 
 // Register routes
 app.use("/api/auth", authRoutes);
