@@ -31,14 +31,7 @@ export const addEmployeeCode = async (req, res) => {
     const { code, description = '' } = req.body;
     
     try {
-        // Перевірка ролі адміна
-        const user = await User.findById(req.userId);
-        if (user.role !== 'admin') {
-            return res.status(403).json({ 
-                success: false, 
-                message: "Доступ заборонено" 
-            });
-        }
+        // Видалено перевірку ролі адміна
 
         // Перевірка чи код вже існує
         const existingCode = await EmployeeCode.findOne({ code });
@@ -80,14 +73,7 @@ export const deleteEmployeeCode = async (req, res) => {
     const { codeId } = req.params;
     
     try {
-        // Перевірка ролі адміна
-        const user = await User.findById(req.userId);
-        if (user.role !== 'admin') {
-            return res.status(403).json({ 
-                success: false, 
-                message: "Доступ заборонено" 
-            });
-        }
+        // Видалено перевірку ролі адміна
 
         const employeeCode = await EmployeeCode.findById(codeId);
         if (!employeeCode) {
@@ -121,15 +107,7 @@ export const deleteEmployeeCode = async (req, res) => {
 // Отримання всіх кодів (тільки адміни)
 export const getAllEmployeeCodes = async (req, res) => {
     try {
-        // Перевірка ролі адміна
-        const user = await User.findById(req.userId);
-        if (user.role !== 'admin') {
-            return res.status(403).json({ 
-                success: false, 
-                message: "Доступ заборонено" 
-            });
-        }
-
+        // Видалено перевірку ролі адміна
         const codes = await EmployeeCode.find()
             .populate('usedBy', 'firstName lastName email')
             .populate('createdBy', 'firstName lastName')

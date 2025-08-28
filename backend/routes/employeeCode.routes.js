@@ -7,7 +7,6 @@ import {
     verifyEmployeeCode,
     verifyAdminCode 
 } from '../controllers/employeeCode.controller.js';
-import { verifyToken } from '../middleware/verifyToken.js';
 
 const router = express.Router();
 
@@ -16,8 +15,9 @@ router.post('/verify-admin-code', verifyAdminCode);
 // Перевірка коду працівника (публічний маршрут)
 router.post('/verify-employee-code', verifyEmployeeCode);
 
-// Захищені маршрути (потрібна авторизація)
-router.use(verifyToken); // Застосовується до всіх маршрутів нижче
+// Видалити захищені маршрути (потрібна авторизація)
+// router.use(verifyToken); // Застосовується до всіх маршрутів нижче
+
 router.post('/add', addEmployeeCode);
 router.delete('/:codeId', deleteEmployeeCode);
 router.get('/all', getAllEmployeeCodes);
