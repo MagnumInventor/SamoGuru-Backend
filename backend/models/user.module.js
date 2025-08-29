@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: false
   },
-    role: {
+  role: {
     type: String,
     enum: Object.values(USER_ROLES), // Обмежуємо можливі значення
     default: USER_ROLES.TRAINEE,     // Стажер за замовчуванням
