@@ -21,11 +21,11 @@ const employeeCodeSchema = new mongoose.Schema({
     type: Date,
     default: null
   },
-  createdBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
+// createdBy: {
+//    type: mongoose.Schema.Types.ObjectId,
+//    ref: 'User',
+//    required: true
+//  },
   description: {
     type: String,
     default: ''
