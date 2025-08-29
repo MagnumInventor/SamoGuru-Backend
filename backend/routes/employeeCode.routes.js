@@ -16,7 +16,7 @@ router.post('/verify-admin-code', verifyAdminCode);
 router.post('/verify-employee-code', verifyEmployeeCode);
 
 // Видалити захищені маршрути (потрібна авторизація)
-// router.use(verifyToken); // Застосовується до всіх маршрутів нижче
+router.use(verifyToken); // Застосовується до всіх маршрутів нижче
 
 router.post('/add', addEmployeeCode);
 router.delete('/:codeId', deleteEmployeeCode);

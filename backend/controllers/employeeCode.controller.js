@@ -45,7 +45,7 @@ export const addEmployeeCode = async (req, res) => {
         const employeeCode = new EmployeeCode({
             code,
             description,
-            createdBy: req.userId || null
+            //createdBy: req.userId || null
         });
 
         await employeeCode.save();
