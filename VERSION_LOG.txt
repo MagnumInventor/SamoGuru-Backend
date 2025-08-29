@@ -33,3 +33,5 @@ v1.3.3d (2025-08-29)
 - Some changes in controllers and imports
 v1.3.4s (2025-08-29)
 - Created VERSION_LOG and filled main details of every version (based on github commits)
+v1.3.5 (2025-08-29)
+- Updated emailTemplates html mail forms to follow SamoGuru styling
