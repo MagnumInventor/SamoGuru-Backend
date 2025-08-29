@@ -31,3 +31,5 @@ v1.3.2 (2025-08-29)
 - Removed (commented) "createdBy" variable that is used for marking authority of admin who made corresponding changes (added employeeCode)
 v1.3.3d (2025-08-29)
 - Some changes in controllers and imports
+v1.3.4s (2025-08-29)
+- Created VERSION_LOG and filled main details of every version (based on github commits)
