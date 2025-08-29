@@ -3,7 +3,7 @@ import bcryptjs from 'bcryptjs';
 import crypto from 'crypto';
 
 import { User, USER_ROLES } from '../models/user.module.js';
-import { EmployeeCode } from '../models/user.module.js';
+import { EmployeeCode } from '../models/employeeCode.model.js';
 import { generateVerificationToken } from '../utils/generateVerificationToken.js';
 import { generateTokenAndSetCookie } from '../utils/generateTokenAndSetCookie.js';
 import { testBrevoConnection, sendPasswordResetEmail, sendResetSuccessEmail, sendVerificationEmail, sendWelcomeEmail } from '../mailing/emails.js';
