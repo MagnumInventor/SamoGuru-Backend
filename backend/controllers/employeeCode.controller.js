@@ -110,7 +110,7 @@ export const getAllEmployeeCodes = async (req, res) => {
         // Видалено перевірку ролі адміна
         const codes = await EmployeeCode.find()
             .populate('usedBy', 'firstName lastName email')
-            .populate('createdBy', 'firstName lastName')
+            .populate('firstName lastName')
             .sort({ createdAt: -1 });
 
         res.status(200).json({
