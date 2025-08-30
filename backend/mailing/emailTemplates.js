@@ -417,7 +417,7 @@ export const WELCOME_EMAIL_TEMPLATE = `
       <div style="space-y: 16px;">
         <div style="display: flex; align-items: flex-start; gap: 16px; margin-bottom: 20px;">
           <div style="background: #2563eb; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px; font-weight: bold;">1</div>
-          <p style="color: #1e40af; margin: 0; font-size: 16px; font-weight: 600; line-height: 1.5;">Зверніться до свого керівника/адміністратора з повідомленням про успішну реєстрацію</p>
+          <p style="color: #1e40af; margin: 0; font-size: 16px; font-weight: 600; line-height: 1.5;">Зверніться до свого керівника/менеджера з повідомленням про успішну реєстрацію</p>
         </div>
         
         <div style="display: flex; align-items: flex-start; gap: 16px; margin-bottom: 20px;">
@@ -521,7 +521,7 @@ export const ROLE_ASSIGNMENT_EMAIL_TEMPLATE = `
   <div style="background-color: white; padding: 50px 40px; border-radius: 0 0 16px 16px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);">
     <div style="text-align: center; margin-bottom: 40px;">
       <h2 style="color: #1f2937; font-size: 28px; font-weight: 700; margin: 0 0 16px 0;">Вашу роль було змінено</h2>
-      <p style="color: #6b7280; font-size: 18px; margin: 0;">Адміністратор оновив ваші права доступу</p>
+      <p style="color: #6b7280; font-size: 18px; margin: 0;">Менеджер оновив ваші права доступу</p>
     </div>
 
      Role change details 

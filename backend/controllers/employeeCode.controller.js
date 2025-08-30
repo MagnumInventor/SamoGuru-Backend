@@ -13,13 +13,13 @@ export const verifyAdminCode = async (req, res) => {
         if (adminCode !== ADMIN_REGISTRATION_CODE) {
             return res.status(400).json({
                 success: false,
-                message: "Недійсний адміністраторський код"
+                message: "Недійсний менеджерський код"
             });
         }
         
         res.status(200).json({
             success: true,
-            message: "Адміністраторський код підтверджено"
+            message: "Менеджерський код підтверджено"
         });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });

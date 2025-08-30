@@ -18,7 +18,7 @@ export const signup = async (req, res) => {
         password, 
         role = USER_ROLES.TRAINEE,
         employeeCode, // Код працівника
-        adminCode     // Адміністраторський код (тільки для адмінів)
+        adminCode     // Менеджерський код (тільки для менеджерів)
     } = req.body;
     
     try {
@@ -41,7 +41,7 @@ export const signup = async (req, res) => {
             if (!adminCode || adminCode !== ADMIN_REGISTRATION_CODE) {
                 return res.status(400).json({
                     success: false,
-                    message: "Недійсний адміністраторський код"
+                    message: "Недійсний менеджерський код"
                 });
             }
         } 
