@@ -44,7 +44,7 @@ export const addEmployeeCode = async (req, res) => {
 
         const employeeCode = new EmployeeCode({
             code,
-            description,
+            description
             //createdBy: req.userId || null
         });
 
@@ -58,7 +58,7 @@ export const addEmployeeCode = async (req, res) => {
                 code: employeeCode.code,
                 description: employeeCode.description,
                 isUsed: employeeCode.isUsed,
-                createdAt: employeeCode.createdAt
+                сreatedAt: employeeCode.createdAt
             }
         });
 
@@ -110,7 +110,6 @@ export const getAllEmployeeCodes = async (req, res) => {
         // Видалено перевірку ролі адміна
         const codes = await EmployeeCode.find()
             .populate('usedBy', 'firstName lastName email')
-            .populate('firstName lastName')
             .sort({ createdAt: -1 });
 
         res.status(200).json({
