@@ -1,0 +1,37 @@
+VERSION_LOG.txt
+Version meaning
+1. vx.x.xs - Stable version with main function/changes working fully properly
+2. vx.x.xd - Development (test) version with main function/changes working
+===============
+Backend branches:
+- Fetch (mail): Implemented Brevo based mail servise used for authentication (07-08 2025)
+- NOauth-admin: Bypassed few security methods that were used to restrict users (all roles apart from admin) from getting access to admin page (27.08.2025)
+- Main (stuck in 08)
+
+v1.0.0 (2025-08-15)
+- Created devided github repository
+- Working simple registration
+
+v1.1.0 (2025-08-15)
+- Added role option in user.model and auth.controller
+
+v1.2.0 (2025-08-22)
+- Added Employee code system by creating employeeCode.schema, employeeCode.controller, employeeCode.routes
+v1.2.1 (2025-08-22)
+- Uptaded index.js by importing employeeCode methods in DB and server file
+v1.2.2 (2025-08-25)
+- Translated html content in index.js file to ukrainian
+
+v1.3.0 (2025-08-28)
+- Implemented schedule system to follow frontend progress
+
+v1.3.1 (2025-08-28-29)
+- Bypassed jew security checks to get termorary (test) access to admin page 
+v1.3.2 (2025-08-29)
+- Removed (commented) "createdBy" variable that is used for marking authority of admin who made corresponding changes (added employeeCode)
+v1.3.3d (2025-08-29)
+- Some changes in controllers and imports
+v1.3.4s (2025-08-29)
+- Created VERSION_LOG and filled main details of every version (based on github commits)
+v1.3.5 (2025-08-29)
+- Updated emailTemplates html mail forms to follow SamoGuru styling

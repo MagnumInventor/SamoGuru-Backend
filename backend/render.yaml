@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: samoguru-server
+    env: node
+    buildCommand: npm install
+    startCommand: node index.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: BREVO_API_KEY
+        value: re_aVdAmnoE_Lv8t7VgdewpYsonrCQKxZxdo
+      - key: CLIENT_URL
+        value: https://www.samoguru.run.place
+    healthCheckPath: /health # переконайтеся, що у вас є GET /health
+    autoDeploy: true
