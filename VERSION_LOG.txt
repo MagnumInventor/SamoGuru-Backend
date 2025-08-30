@@ -6,32 +6,46 @@ Version meaning
 Backend branches:
 - Fetch (mail): Implemented Brevo based mail servise used for authentication (07-08 2025)
 - NOauth-admin: Bypassed few security methods that were used to restrict users (all roles apart from admin) from getting access to admin page (27.08.2025)
-- Main (stuck in 08)
+- Main (NOauth (low-security methods limiting admin page from joint access) branch merged into main)
 
-v1.0.0 (2025-08-15)
-- Created devided github repository
-- Working simple registration
+1.1.0 (2025-07-dd) (in MONO-repository)
+- Creating full-stack infrastcurture for server functions (Using AI systems) - failed
 
-v1.1.0 (2025-08-15)
+v2.2.0 (2025-07-20)
+- Implemented MERN stack mono-sudo
+v2.2.0 (2025-07-20)
+- Adding properly secured but simple authentication ("simple-login" branch)
+v2.2.1s (2025-07-20)
+- Formed stable simple auth. system (terporary not suitable for SamoGuru eco-system) including: email verification, reset/forgot password end points, security from varios hacker attacks (SQL ...)
+
+v3.1.0 (2025-08-15)
 - Added role option in user.model and auth.controller
 
-v1.2.0 (2025-08-22)
+v3.2.0 (2025-08-22)
 - Added Employee code system by creating employeeCode.schema, employeeCode.controller, employeeCode.routes
-v1.2.1 (2025-08-22)
+v3.2.1 (2025-08-22)
 - Uptaded index.js by importing employeeCode methods in DB and server file
-v1.2.2 (2025-08-25)
+v3.2.2 (2025-08-25)
 - Translated html content in index.js file to ukrainian
 
-v1.3.0 (2025-08-28)
+v3.3.0 (2025-08-28)
 - Implemented schedule system to follow frontend progress
 
-v1.3.1 (2025-08-28-29)
+v3.3.1 (2025-08-28-29)
 - Bypassed jew security checks to get termorary (test) access to admin page 
-v1.3.2 (2025-08-29)
+v3.3.2 (2025-08-29)
 - Removed (commented) "createdBy" variable that is used for marking authority of admin who made corresponding changes (added employeeCode)
-v1.3.3d (2025-08-29)
+v3.3.3d (2025-08-29)
 - Some changes in controllers and imports
-v1.3.4s (2025-08-29)
+v3.3.4s (2025-08-29)
 - Created VERSION_LOG and filled main details of every version (based on github commits)
-v1.3.5 (2025-08-29)
+v3.3.5 (2025-08-29)
 - Updated emailTemplates html mail forms to follow SamoGuru styling
+
+v3.4.0 (2025-08-29)
+- Implemented low-security limiting methods to open access to admin page only for admin role
+v3.4.1s (2025-08-30)
+- Merged updates into MAIN after tests
+
+v3.4.2 (2025-08-30)
+- Renamed all console posts from "Адмін, адміністрація" to "Менеджер, менеджмент"
