@@ -49,3 +49,8 @@ v3.4.1s (2025-08-30)
 
 v3.4.2 (2025-08-30)
 - Renamed all console posts from "Адмін, адміністрація" to "Менеджер, менеджмент"
+
+v3.6.1 (2025-09-03/04)
+- Updated to current (3.6.6 App version)
+v3.6.2 (2025-09-03/04)
+- Devided role codes checkc (except from TRAINEE)

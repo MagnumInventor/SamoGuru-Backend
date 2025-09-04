@@ -8,17 +8,17 @@ import { generateVerificationToken } from '../utils/generateVerificationToken.js
 import { generateTokenAndSetCookie } from '../utils/generateTokenAndSetCookie.js';
 import { testBrevoConnection, sendPasswordResetEmail, sendResetSuccessEmail, sendVerificationEmail, sendWelcomeEmail } from '../mailing/emails.js';
 
+
 const ADMIN_REGISTRATION_CODE = process.env.ADMIN_REGISTRATION_CODE || "ADMIN2025_SECRET";
 
-// Реєстрація (ОНОВЛЕНА для первинної реєстраці з кодом працівника) 
 export const signup = async (req, res) => {
     const { 
         email, 
         firstName, 
         password, 
         role = USER_ROLES.TRAINEE,
-        employeeCode, // Код працівника
-        adminCode     // Менеджерський код (тільки для менеджерів)
+        employeeCode, 
+        adminCode     
     } = req.body;
     
     try {
@@ -36,7 +36,7 @@ export const signup = async (req, res) => {
             });
         }
 
-        // Логіка для адміністраторів
+        // Логіка для різних ролей
         if (role === USER_ROLES.ADMIN) {
             if (!adminCode || adminCode !== ADMIN_REGISTRATION_CODE) {
                 return res.status(400).json({
@@ -45,27 +45,38 @@ export const signup = async (req, res) => {
                 });
             }
         } 
-        // Логіка для інших ролей, крім TRAINEE та ADMIN
-        else if (role !== USER_ROLES.TRAINEE) {
+        else if (role === USER_ROLES.WAITER) {
             if (!employeeCode) {
                 return res.status(400).json({
                     success: false,
-                    message: "Код працівника обов'язковий"
+                    message: "Код офіціанта обов'язковий"
                 });
             }
-
-            // Перевірка коду працівника
-            const validCode = await EmployeeCode.findOne({ 
-                code: employeeCode,
-                isUsed: false 
-            });
-
-            if (!validCode) {
+        }
+        else if (role === USER_ROLES.HELPER) {
+            if (!employeeCode) {
                 return res.status(400).json({
                     success: false,
-                    message: "Недійсний або вже використаний код працівника"
+                    message: "Код помічника обов'язковий"
                 });
             }
+        }
+        else if (role === USER_ROLES.TRAINEE) {
+    // trainee-specific logic goes here (if any)
+            // Стажер не потребує коду працівника
+        }
+
+        // Перевірка коду працівника
+        const validCode = await EmployeeCode.findOne({ 
+            code: employeeCode,
+            isUsed: false 
+        });
+
+        if (!validCode) {
+            return res.status(400).json({
+                success: false,
+                message: "Недійсний або вже використаний код працівника"
+            });
         }
 
         // Хешування пароля
