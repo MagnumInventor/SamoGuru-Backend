@@ -45,8 +45,8 @@ export const signup = async (req, res) => {
                 });
             }
         } 
-        // Логіка для звичайних працівників
-        else {
+        // Логіка для інших ролей, крім TRAINEE та ADMIN
+        else if (role !== USER_ROLES.TRAINEE) {
             if (!employeeCode) {
                 return res.status(400).json({
                     success: false,
@@ -85,8 +85,8 @@ export const signup = async (req, res) => {
 
         await user.save();
 
-        // Позначити код як використаний (тільки для звичайних працівників)
-        if (role !== USER_ROLES.ADMIN && employeeCode) {
+        // Позначити код як використаний (тільки для ролей, які не є ADMIN або TRAINEE)
+        if (role !== USER_ROLES.ADMIN && role !== USER_ROLES.TRAINEE && employeeCode) {
             await EmployeeCode.findOneAndUpdate(
                 { code: employeeCode },
                 { 
