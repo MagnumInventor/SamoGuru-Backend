@@ -67,16 +67,18 @@ export const signup = async (req, res) => {
         }
 
         // Перевірка коду працівника
-        const validCode = await EmployeeCode.findOne({ 
-            code: employeeCode,
-            isUsed: false 
-        });
-
-        if (!validCode) {
-            return res.status(400).json({
-                success: false,
-                message: "Недійсний або вже використаний код працівника"
+        if (role !== USER_ROLES.TRAINEE && role !== USER_ROLES.ADMIN) {
+            const validCode = await EmployeeCode.findOne({ 
+                code: employeeCode,
+                isUsed: false 
             });
+
+            if (!validCode) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Недійсний або вже використаний код працівника"
+                });
+            }
         }
 
         // Хешування пароля
