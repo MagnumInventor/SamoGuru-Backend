@@ -1,7 +1,12 @@
 VERSION_LOG.txt
 Version meaning
-1. vx.x.xs - Stable version with main function/changes working fully properly
-2. vx.x.xd - Development (test) version with main function/changes working
+1. vx.x.xS - Stable version with main function/changes working FULLY properly
+2. vx.x.xB - Stable version with main function/changes working with BYPASS/ES
+3. vx.x.xD - Development (test) version with main function/changes WORKING
+4. vx.x.xU - Updated p&p.
+
+Умовні позначення:
++/++/+++ : Малі/середні/великі правки, фікси та зміни щодо поточної версії (якщо вона не S)
 ===============
 Backend branches:
 - Fetch (mail): Implemented Brevo based mail servise used for authentication (07-08 2025)
@@ -54,3 +59,8 @@ v3.6.1 (2025-09-03/04)
 - Updated to current (3.6.6 App version)
 v3.6.2 (2025-09-03/04)
 - Devided role codes checkc (except from TRAINEE)
+
+v3.6.3+ (2025-09-06)
+- Devided role codes checkc (except from TRAINEE)
+v3.6.10S (2025-09-06)
+- Properly working authentication
