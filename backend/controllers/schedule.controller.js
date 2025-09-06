@@ -100,3 +100,17 @@ export const savePersonalSchedule = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// Add to schedule.controller.js:
+export const deleteSchedule = async (req, res) => {
+  const { id } = req.params;
+  try {
+    if (!await isAdmin(req.userId)) {
+      return res.status(403).json({ message: "Access denied" });
+    }
+    await Schedule.findByIdAndDelete(id);
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
