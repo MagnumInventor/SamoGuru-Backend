@@ -49,6 +49,12 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'SamoGuru API Server is running' });
 });
 
+// Імпорт маршрутів
+const userRoutes = require('./routes/users');
+
+// Підключення маршрутів для працівників
+app.use('/api/users', userRoutes);
+
 app.use('/api/employee-codes', employeeCodeRoutes);
 app.use('/api/schedule', scheduleRoutes); // <-- Add this line
 
