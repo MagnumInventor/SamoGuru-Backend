@@ -49,16 +49,19 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'SamoGuru API Server is running' });
 });
 
-//ДОБАВИТИ ДЛЯ ГРАФІКУ
+
+
 
 // Підключення маршрутів для працівників
 app.use('/api/users', userRoutes);
 
 app.use('/api/employee-codes', employeeCodeRoutes);
-app.use('/api/schedule', scheduleRoutes); // <-- Add this line
+app.use('/api/schedule', scheduleRoutes);
 
 // Register routes
 app.use("/api/auth", authRoutes);
+
+
 
 // Handle API 404s (should be after all API routes)
 app.use('/api/*', (req, res) => {
