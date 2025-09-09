@@ -70,4 +70,6 @@ v3.7.0 (2025-09-07)
 
 v3.8.1 (2025-09-09)
 - Clean work tree for Schedule management implementation
+v3.8.2 (2025-09-10)
+- Import backend files from external DEV. device
 
