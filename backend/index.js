@@ -50,7 +50,15 @@ app.get('/health', (req, res) => {
 });
 
 // Імпорт маршрутів
-app.use('./routes/users');
+app.use('/api/users');
+
+
+
+
+            //ВСЕ ПЕРЕРОБИТИ
+
+
+
 
 // Підключення маршрутів для працівників
 app.use('/api/users', userRoutes);

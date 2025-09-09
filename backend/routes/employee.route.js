@@ -1,7 +1,24 @@
-// routes/users.js або routes/employees.js
+import express from "express";
 
-const express = require('express');
+
+
+
+            //ВСЕ ПЕРЕРОБИТИ
+
+
+
+
 const router = express.Router();
+
+// Register routes in a specific order
+router.post("/signup", deleteSchedule);
+router.post("/login", savePersonalSchedule);
+router.post("/logout", getPersonalSchedule);
+router.post("/verify-email", getAllSchedules);
+router.post("/forgot-password", importSchedule);
+router.post("/reset-password/:token", createOrUpdateSchedule);
+
+export default router;
 
 // GET /users/role/:role - Отримати користувачів за роллю
 router.get('/role/:role', async (req, res) => {
