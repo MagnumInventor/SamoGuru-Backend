@@ -50,11 +50,7 @@ app.get('/health', (req, res) => {
 });
 
 
-
-
-// Підключення маршрутів для працівників
-app.use('/api/users', userRoutes);
-
+// Щляхи функціоналу
 app.use('/api/employee-codes', employeeCodeRoutes);
 app.use('/api/schedule', scheduleRoutes);
 
