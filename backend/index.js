@@ -49,15 +49,10 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'SamoGuru API Server is running' });
 });
 
-
-// Щляхи функціоналу
+// Register API routes
+app.use("/api/auth", authRoutes);
 app.use('/api/employee-codes', employeeCodeRoutes);
 app.use('/api/schedule', scheduleRoutes);
-
-// Register routes
-app.use("/api/auth", authRoutes);
-
-
 
 // Handle API 404s (should be after all API routes)
 app.use('/api/*', (req, res) => {
@@ -83,7 +78,7 @@ if (process.env.NODE_ENV === 'production') {
         res.sendFile(indexPath);
       });
     } else {
-      // Коментуємо цей блок, щоб уникнути конфлікту з API маршрутами
+      // Fallback HTML when build files don't exist
       app.get('*', (req, res) => {
         if (!req.path.startsWith('/api/')) {
           res.send(`
@@ -95,25 +90,42 @@ if (process.env.NODE_ENV === 'production') {
                 body { font-family: Arial, sans-serif; margin: 40px; }
                 .container { max-width: 600px; margin: 0 auto; }
                 .api-info { background: #f5f5f5; padding: 20px; border-radius: 8px; }
+                .endpoint { margin: 8px 0; }
+                .method { font-weight: bold; color: #2563eb; }
               </style>
             </head>
             <body>
               <div class="container">
                 <h1>🚀 Сервер СамоГуру</h1>
-                <p>Функції реєстрації та API справно праюють!</p>
+                <p>API сервер працює та готовий обробляти запити!</p>
                 <div class="api-info">
-                  <h3>Достуні API Endpoints:</h3>
-                  <ul>
-                    <li><strong>POST</strong> /api/auth/signup - Реєстрація</li>
-                    <li><strong>POST</strong> /api/auth/login - Вхід</li>
-                    <li><strong>POST</strong> /api/auth/logout - Вихід</li>
-                    <li><strong>POST</strong> /api/auth/verify-email - Емейл верификація</li>
-                    <li><strong>POST</strong> /api/auth/forgot-password - Скидання пароля</li>
-                    <li><strong>POST</strong> /api/auth/reset-password/:token - Відновлення пароля</li>
-                    <li><strong>GET</strong> /api/auth/check-auth - Перевірка аутинтифікації</li>
-                  </ul>
+                  <h3>Доступні API Endpoints:</h3>
+                  
+                  <h4>🔐 Аутентифікація (/api/auth)</h4>
+                  <div class="endpoint"><span class="method">POST</span> /api/auth/signup - Реєстрація</div>
+                  <div class="endpoint"><span class="method">POST</span> /api/auth/login - Вхід</div>
+                  <div class="endpoint"><span class="method">POST</span> /api/auth/logout - Вихід</div>
+                  <div class="endpoint"><span class="method">POST</span> /api/auth/verify-email - Верифікація email</div>
+                  <div class="endpoint"><span class="method">POST</span> /api/auth/forgot-password - Скидання пароля</div>
+                  <div class="endpoint"><span class="method">POST</span> /api/auth/reset-password/:token - Відновлення пароля</div>
+                  <div class="endpoint"><span class="method">GET</span> /api/auth/check-auth - Перевірка аутентифікації</div>
+                  
+                  <h4>👥 Коди працівників (/api/employee-codes)</h4>
+                  <div class="endpoint"><span class="method">GET</span> /api/employee-codes/all - Отримати всі коди (admin)</div>
+                  <div class="endpoint"><span class="method">POST</span> /api/employee-codes/add - Додати код (admin)</div>
+                  <div class="endpoint"><span class="method">DELETE</span> /api/employee-codes/:id - Видалити код (admin)</div>
+                  
+                  <h4>📅 Розклади (/api/schedule)</h4>
+                  <div class="endpoint"><span class="method">POST</span> /api/schedule/create - Створити розклад (admin)</div>
+                  <div class="endpoint"><span class="method">GET</span> /api/schedule/all - Отримати всі розклади (admin)</div>
+                  <div class="endpoint"><span class="method">GET</span> /api/schedule/my-current - Мій поточний розклад</div>
+                  <div class="endpoint"><span class="method">GET</span> /api/schedule/employees/:role - Працівники по ролі (admin)</div>
+                  <div class="endpoint"><span class="method">PUT</span> /api/schedule/:id - Оновити розклад (admin)</div>
+                  <div class="endpoint"><span class="method">POST</span> /api/schedule/:id/publish - Опублікувати розклад (admin)</div>
+                  <div class="endpoint"><span class="method">DELETE</span> /api/schedule/:id - Видалити розклад (admin)</div>
                 </div>
-                <p><em>Клієнтська сторона додатку працює на наступному домені: www.samoguru.run.place </em></p>
+                <p><em>Клієнтська сторона додатку: <a href="https://www.samoguru.run.place" target="_blank">www.samoguru.run.place</a></em></p>
+                <p><small>Версія API: 2.0 | Включає систему управління розкладами</small></p>
               </div>
             </body>
             </html>
@@ -139,5 +151,6 @@ app.listen(PORT, () => {
 });
 
 console.log('Registered routes:');
-console.log('/api/employee-codes');
-console.log('/api/auth');
+console.log('✓ /api/auth - Authentication routes');
+console.log('✓ /api/employee-codes - Employee codes management');
+console.log('✓ /api/schedule - Schedule management system');
