@@ -316,7 +316,7 @@ export const getMyCurrentSchedule = async (req, res) => {
       return res.json({
         success: true,
         schedule: null,
-        message: "Ви не включені в поточний розклад"
+        message: "Ви не включені в поточний розклад (3.8.5)"
       });
     }
     
