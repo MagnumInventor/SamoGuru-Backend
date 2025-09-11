@@ -4,8 +4,8 @@ import mongoose from "mongoose";
 const SHIFT_TYPES = {
   DAY: '1',      // 9:00-22:15
   EVENING: '16', // 16:00-23:00
-  OFF: '0',      // День відпочинку
-  ADDITIONAL: 'ADD' // Додаткова зміна
+  OFF: '0',      // Вихідний
+  ADDITIONAL: 'ADD'
 };
 
 const SCHEDULE_ROLES = {
@@ -81,7 +81,6 @@ const scheduleEmployeeSchema = new mongoose.Schema({
 
 // Основна схема розкладу
 const scheduleSchema = new mongoose.Schema({
-  // Базова інформація
   title: {
     type: String,
     required: true
@@ -121,13 +120,11 @@ const scheduleSchema = new mongoose.Schema({
   
   // Працівники та їх розклади
   employees: [scheduleEmployeeSchema],
-  
-  // Статус розкладу
-  status: {
-    type: String,
-    enum: ['draft', 'published', 'archived'],
-    default: 'draft'
-  },
+    status: {
+      type: String,
+      enum: ['draft', 'published', 'archived'],
+      default: 'draft'
+    },
   
   // Чи є цей розклад поточним для відображення користувачам
   isCurrent: {
