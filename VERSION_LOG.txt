@@ -75,3 +75,5 @@ v3.8.2 (2025-09-10)
 v3.8.3d (2025-09-10)
 - Import index.js from external DEV. device
 
+v3.8.5 (2025-09-11)
+- Employee current schedule fix

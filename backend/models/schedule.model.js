@@ -223,10 +223,11 @@ scheduleSchema.methods.archive = function() {
 
 scheduleSchema.methods.getEmployeePersonalSchedule = function(employeeId) {
   const employee = this.employees.find(emp => 
-    emp.employee.toString() === employeeId.toString()
-  );
+    emp.employee.equals(employeeId));
   
-  if (!employee) return null;
+  if (!employee) {
+    return null;
+  }
   
   return {
     month: this.month,
