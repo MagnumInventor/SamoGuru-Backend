@@ -309,10 +309,9 @@ export const getMyCurrentSchedule = async (req, res) => {
 
 
   // Отримання особистого розкладу працівника
-    
+     
+    const userEmail = user.email;
     const personalSchedule = schedule.getEmployeePersonalSchedule(userEmail);
-    
-    const userEmail = req.email;
     
     if (!personalSchedule) {
       return res.json({
