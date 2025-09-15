@@ -37,9 +37,16 @@ app.use(cors({
     ? ['https://www.samoguru.run.place', 'https://samoguru.run.place']
     : 'http://localhost:3000',
   credentials: true, // для cookies
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Set-Cookie'],
+  exposedHeaders: ['Set-Cookie'],
 }));
+
+// Configure cookie settings
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Credentials', 'true');
+  next();
+});
 
 app.use(express.json());
 app.use(cookieParser());
