@@ -304,14 +304,19 @@ export const getMyCurrentSchedule = async (req, res) => {
         message: "Поточний розклад не знайдений"
       });
     }
+  
     
+
+
+  // Отримання особистого розкладу працівника
+     
     const personalSchedule = schedule.getEmployeePersonalSchedule(userId);
     
     if (!personalSchedule) {
       return res.json({
         success: true,
         schedule: null,
-        message: "Ви не включені в поточний розклад"
+        message: "Ви не включені в поточний розклад (3.8.5)"
       });
     }
     
@@ -328,6 +333,11 @@ export const getMyCurrentSchedule = async (req, res) => {
     });
   }
 };
+
+
+
+
+
 
 // Publish schedule
 export const publishSchedule = async (req, res) => {
