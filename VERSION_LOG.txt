@@ -77,3 +77,6 @@ v3.8.3d (2025-09-10)
 
 v3.8.5 (2025-09-11)
 - Employee current schedule fix
+
+v3.8.6 (2025-09-22)
+- Update and return to strict Cookies settings
