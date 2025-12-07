@@ -7,6 +7,7 @@ import { EmployeeCode } from '../models/employeeCode.model.js';
 import { generateVerificationToken } from '../utils/generateVerificationToken.js';
 import { generateTokenAndSetCookie } from '../utils/generateTokenAndSetCookie.js';
 import { testBrevoConnection, sendPasswordResetEmail, sendResetSuccessEmail, sendVerificationEmail, sendWelcomeEmail } from '../mailing/emails.js';
+import logger from '../utils/logger.js';
 
 
 const ADMIN_REGISTRATION_CODE = process.env.ADMIN_REGISTRATION_CODE || "ADMIN2025_SECRET";
@@ -22,6 +23,8 @@ export const signup = async (req, res) => {
     } = req.body;
     
     try {
+        logger.info('User signup attempt', { email, role });
+
         // Валідація обов'язкових полів
         if(!email || !firstName || !password) {
             throw new Error("Введіть дані в усі обов'язкові поля!");
@@ -83,10 +86,8 @@ export const signup = async (req, res) => {
 
         // Хешування пароля
         const hashedPassword = await bcryptjs.hash(password, 10);
-        // Генерація токену верифікації
         const verificationToken = generateVerificationToken();
         
-        // Створення нового користувача
         const user = new User({
             email,
             password: hashedPassword,
@@ -97,6 +98,8 @@ export const signup = async (req, res) => {
         });
 
         await user.save();
+        
+        logger.info('User created successfully', { userId: user._id, email, role });
 
         // Позначити код як використаний (тільки для ролей, які не є ADMIN або TRAINEE)
         if (role !== USER_ROLES.ADMIN && role !== USER_ROLES.TRAINEE && employeeCode) {
@@ -112,7 +115,6 @@ export const signup = async (req, res) => {
 
         // Генерація JWT та кукі
         generateTokenAndSetCookie(res, user._id);
-
         // Відправка email для верифікації
         await sendVerificationEmail(user.email, verificationToken);
 
@@ -131,7 +133,7 @@ export const signup = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Помилка при реєстрації:", error);
+        logger.error('Signup error', { error: error.message, email });
         return res.status(400).json({
             success: false, 
             message: error.message || "Сталася помилка при реєстрації"
@@ -178,19 +180,25 @@ export const verifyEmail = async (req, res) => {
 export const login = async (req, res) => {
     const { email, password } = req.body;
     try {
+        logger.info('Login attempt', { email });
+        
         const user = await User.findOne({ email });
         if(!user) {
+            logger.warn('Login failed - user not found', { email });
             return res.status(400).json({ success: false, message: "Неправильні дані для входу"});
         }
+        
         const isPasswordValid = await bcryptjs.compare(password, user.password);
         if(!isPasswordValid) {
+            logger.warn('Login failed - invalid password', { email });
             return res.status(400).json({ success: false, message: "Пароль для входу не співпадає"});
         }
 
         generateTokenAndSetCookie(res, user._id);
-
         user.entryDate = new Date();
         await user.save();
+        
+        logger.info('User logged in successfully', { userId: user._id, email });
 
         res.status(200).json({
             success: true,
@@ -201,9 +209,8 @@ export const login = async (req, res) => {
             },
         });
 
-
     } catch (error) {
-        console.error("Помилка входу:", error);
+        logger.error('Login error', { error: error.message, email });
         res.status(500).json({ success: false, message: error.message || 'Помилка серверу' });
     }
 };
