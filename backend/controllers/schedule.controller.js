@@ -1,7 +1,6 @@
 // backend/controllers/schedule.controller.js
 import { Schedule, SHIFT_TYPES, SCHEDULE_ROLES } from '../models/schedule.model.js';
 import { User, USER_ROLES } from '../models/user.module.js';
-import logger from '../utils/logger.js';
 
 // Utility functions
 const getDaysInMonth = (month, year) => {
@@ -59,12 +58,12 @@ export const createSchedule = async (req, res) => {
     const { month, year, role, title, generalComment, selectedEmployees, customShifts } = req.body;
     const adminId = req.userId;
     
-    logger.info('Creating schedule', { month, year, role, adminId });
+    // logger.info('Creating schedule', { month, year, role, adminId });
     
     // Verify admin permissions
     const admin = await User.findById(adminId);
     if (!admin || admin.role !== USER_ROLES.ADMIN) {
-      logger.warn('Unauthorized schedule creation attempt', { userId: adminId });
+      // logger.warn('Unauthorized schedule creation attempt', { userId: adminId });
       return res.status(403).json({
         success: false,
         message: "Тільки менеджери можуть створювати розклади"
@@ -153,7 +152,7 @@ export const createSchedule = async (req, res) => {
     
     await schedule.save();
     
-    logger.info('Schedule created successfully', { scheduleId: schedule._id, adminId });
+    // logger.info('Schedule created successfully', { scheduleId: schedule._id, adminId });
     
     res.status(201).json({
       success: true,
@@ -171,7 +170,8 @@ export const createSchedule = async (req, res) => {
     });
     
   } catch (error) {
-    logger.error('Error creating schedule', { error: error.message, stack: error.stack });
+    // logger.error('Error creating schedule', { error: error.message, stack: error.stack });
+    console.error('Error creating schedule', error);
     res.status(500).json({
       success: false,
       message: "Помилка сервера при створенні розкладу"
@@ -351,11 +351,11 @@ export const publishSchedule = async (req, res) => {
     const { scheduleId } = req.params;
     const adminId = req.userId;
     
-    logger.info('Publishing schedule', { scheduleId, adminId });
+    // logger.info('Publishing schedule', { scheduleId, adminId });
     
     const admin = await User.findById(adminId);
     if (!admin || admin.role !== USER_ROLES.ADMIN) {
-      logger.warn('Unauthorized schedule publish attempt', { userId: adminId, scheduleId });
+      // logger.warn('Unauthorized schedule publish attempt', { userId: adminId, scheduleId });
       return res.status(403).json({
         success: false,
         message: "Тільки менеджери можуть публікувати розклади"
@@ -364,7 +364,7 @@ export const publishSchedule = async (req, res) => {
     
     const schedule = await Schedule.findById(scheduleId);
     if (!schedule) {
-      logger.warn('Schedule not found', { scheduleId });
+      // logger.warn('Schedule not found', { scheduleId });
       return res.status(404).json({
         success: false,
         message: "Розклад не знайдений"
@@ -380,7 +380,7 @@ export const publishSchedule = async (req, res) => {
     // Publish this schedule
     await schedule.publish();
     
-    logger.info('Schedule published successfully', { scheduleId });
+    // logger.info('Schedule published successfully', { scheduleId });
     
     res.json({
       success: true,
@@ -394,7 +394,8 @@ export const publishSchedule = async (req, res) => {
     });
     
   } catch (error) {
-    logger.error('Error publishing schedule', { error: error.message });
+    // logger.error('Error publishing schedule', { error: error.message });
+    console.error('Error publishing schedule', error);
     res.status(500).json({
       success: false,
       message: "Помилка сервера"

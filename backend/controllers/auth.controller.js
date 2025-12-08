@@ -1,4 +1,3 @@
-//backend/controllers/auth.controller.js employeeCode.controller.js
 import bcryptjs from 'bcryptjs';
 import crypto from 'crypto';
 
@@ -216,7 +215,7 @@ export const logout = async (req, res) => {
 
 // Забув пароль
 export const forgotPassword = async (req, res) => {
-        const { email } = req.body
+    const { email } = req.body
     try {
         const user = await User.findOne({ email });
 
@@ -226,7 +225,6 @@ export const forgotPassword = async (req, res) => {
 
         const resetToken = crypto.randomBytes(52).toString("hex");
         const resetTokenExpiresAt = Date.now() + 1 * 60 * 60 * 1000;
-        
 
         user.resetPasswordToken = resetToken;
         user.resetPasswordTokenExpiresAt = resetTokenExpiresAt;
@@ -235,10 +233,11 @@ export const forgotPassword = async (req, res) => {
 
         const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000';
         await sendPasswordResetEmail(user.email, `${clientUrl}/reset-password/${resetToken}`);
+        
         res.status(200).json({ success: true, message: "Лист для скидання паролю успішно надісланий"});
 
     } catch (error) {
-        console.log("Помилка при надсиланні листа для скидання паролю");
+        console.error('Password reset error', error);
         res.status(400).json({ success: false, message: error.message });
     }
 };
