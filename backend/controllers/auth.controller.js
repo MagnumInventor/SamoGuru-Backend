@@ -145,6 +145,8 @@ export const signup = async (req, res) => {
 export const verifyEmail = async (req, res) => {
     const { code } = req.body;
     try {
+        logger.info('Email verification attempt', { code: code?.substring(0, 10) });
+        
         await testBrevoConnection();
         const user = await User.findOne({
             verificationToken: code,
@@ -152,7 +154,8 @@ export const verifyEmail = async (req, res) => {
         })
 
         if(!user) {
-            return res.status(400).json({seccess: false, message: "Неправильний або просрочений код перевірки"})
+            logger.warn('Invalid verification code', { code: code?.substring(0, 10) });
+            return res.status(400).json({success: false, message: "Неправильний або просрочений код перевірки"})
         }
 
         user.isVerified = true;
@@ -161,6 +164,8 @@ export const verifyEmail = async (req, res) => {
         await user.save();
 
         await sendWelcomeEmail(user.email, user.firstName);
+        
+        logger.info('Email verified successfully', { userId: user._id, email: user.email });
         
         res.status(200).json({
             success: true,
@@ -171,7 +176,7 @@ export const verifyEmail = async (req, res) => {
             },
         });
     } catch (error) {
-        console.log("Помилка у системі верифікації", error);
+        logger.error('Email verification error', { error: error.message });
         res.status(500).json({success:false, message: "Помилка системи" });
     }
 };
@@ -223,17 +228,19 @@ export const logout = async (req, res) => {
 
 // Забув пароль
 export const forgotPassword = async (req, res) => {
-        const { email } = req.body
+    const { email } = req.body
     try {
+        logger.info('Password reset request', { email });
+        
         const user = await User.findOne({ email });
 
         if(!user) {
+            logger.warn('Password reset - user not found', { email });
             return res.status(400).json({ success: false, message: "Користувача не найдено"});
         }
 
         const resetToken = crypto.randomBytes(52).toString("hex");
         const resetTokenExpiresAt = Date.now() + 1 * 60 * 60 * 1000;
-        
 
         user.resetPasswordToken = resetToken;
         user.resetPasswordTokenExpiresAt = resetTokenExpiresAt;
@@ -242,19 +249,23 @@ export const forgotPassword = async (req, res) => {
 
         const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000';
         await sendPasswordResetEmail(user.email, `${clientUrl}/reset-password/${resetToken}`);
+        
+        logger.info('Password reset email sent', { userId: user._id, email });
+        
         res.status(200).json({ success: true, message: "Лист для скидання паролю успішно надісланий"});
 
     } catch (error) {
-        console.log("Помилка при надсиланні листа для скидання паролю");
+        logger.error('Password reset error', { error: error.message, email });
         res.status(400).json({ success: false, message: error.message });
     }
 };
 
-// Скидання паролю
 export const resetPassword = async (req, res) => {
 	try {
 		const { token } = req.params;
 		const { password } = req.body;
+
+		logger.info('Password reset attempt', { token: token?.substring(0, 10) });
 
 		const user = await User.findOne({
 			resetPasswordToken: token,
@@ -262,10 +273,10 @@ export const resetPassword = async (req, res) => {
 		});
 
 		if (!user) {
+			logger.warn('Password reset - invalid token', { token: token?.substring(0, 10) });
 			return res.status(400).json({ success: false, message: "Невірний або старий код відновлення" });
 		}
 
-		// update password
 		const hashedPassword = await bcryptjs.hash(password, 10);
 
 		user.password = hashedPassword;
@@ -275,9 +286,11 @@ export const resetPassword = async (req, res) => {
 
 		await sendResetSuccessEmail(user.email);
 
+		logger.info('Password reset successfully', { userId: user._id });
+
 		res.status(200).json({ success: true, message: "Пароль відновлено успішно" });
 	} catch (error) {
-		console.log("Помилка у відновленні паролю ", error);
+		logger.error('Password reset error', { error: error.message });
 		res.status(400).json({ success: false, message: error.message });
 	}
 };
@@ -287,12 +300,13 @@ export const checkAuth = async (req, res) => {
 	try {
 		const user = await User.findById(req.userId).select("-password");
 		if (!user) {
+			logger.warn('User not found in checkAuth', { userId: req.userId });
 			return res.status(400).json({ success: false, message: "User not found" });
 		}
 
 		res.status(200).json({ success: true, user });
 	} catch (error) {
-		console.log("Error in checkAuth ", error);
+		logger.error('CheckAuth error', { error: error.message, userId: req.userId });
 		res.status(400).json({ success: false, message: error.message });
 	}
 };
