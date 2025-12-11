@@ -1,29 +1,26 @@
 // backend/models/schedule.model.js
 import mongoose from "mongoose";
 
-const SHIFT_TYPES = {
-  DAY: '1',      // 9:00-22:15
-  EVENING: '16', // 16:00-23:00
-  OFF: '0',      // Вихідний
-  ADDITIONAL: 'ADD'
+export const SHIFT_TYPES = {
+  DAY: 'day',
+  EVENING: 'evening',
+  NIGHT: 'night',
+  OFF: 'off',
+  ADDITIONAL: 'additional'
 };
 
-const SCHEDULE_ROLES = {
-  ADMIN: 'admin',
-  HELPER: 'helper', 
-  WAITER: 'waiter'
+export const SCHEDULE_ROLES = {
+  WAITER: 'waiter',
+  HELPER: 'helper'
 };
 
 // Схема для окремого дня в розкладі
-const scheduleDaySchema = new mongoose.Schema({
+const daySchema = new mongoose.Schema({
   date: {
     type: Date,
     required: true
   },
-  dayOfWeek: {
-    type: String,
-    required: true // пн, вт, ср, чт, пт, сб, нд
-  },
+  dayOfWeek: String,
   shift: {
     type: String,
     enum: Object.values(SHIFT_TYPES),
@@ -32,111 +29,59 @@ const scheduleDaySchema = new mongoose.Schema({
   isAdditional: {
     type: Boolean,
     default: false
-  },
-  comment: {
-    type: String,
-    default: ''
   }
-});
+}, { _id: false });
 
 // Схема для працівника в розкладі
-const scheduleEmployeeSchema = new mongoose.Schema({
+const employeeScheduleSchema = new mongoose.Schema({
   employee: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true
+    required: true,
+    index: true
   },
-  employeeName: {
-    type: String,
-    required: true
-  },
-  employeeEmail: {
-    type: String,
-    required: true
-  },
-  employeeRole: {
-    type: String,
-    enum: Object.values(SCHEDULE_ROLES),
-    required: true
-  },
-  days: [scheduleDaySchema],
-  // Статистика для працівника
-  totalWorkingDays: {
-    type: Number,
-    default: 0
-  },
-  totalDayShifts: {
-    type: Number,
-    default: 0
-  },
-  totalEveningShifts: {
-    type: Number,
-    default: 0
-  },
-  totalAdditionalShifts: {
-    type: Number,
-    default: 0
-  }
-});
+  employeeName: String,
+  employeeEmail: String,
+  employeeRole: String,
+  days: [daySchema]
+}, { _id: false });
 
 // Основна схема розкладу
 const scheduleSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: true
+    required: true,
+    index: true
   },
   month: {
     type: Number,
     required: true,
     min: 1,
-    max: 12
+    max: 12,
+    index: true
   },
   year: {
     type: Number,
-    required: true
+    required: true,
+    index: true
   },
   role: {
     type: String,
     enum: Object.values(SCHEDULE_ROLES),
-    required: true
+    required: true,
+    index: true
   },
-  
-  // Автор розкладу
-  createdBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
-  createdByName: {
+  status: {
     type: String,
-    required: true
+    enum: ['draft', 'published', 'archived'],
+    default: 'draft',
+    index: true
   },
-  
-  // Коментар до розкладу
-  generalComment: {
-    type: String,
-    default: ''
-  },
-  
-  // Працівники та їх розклади
-  employees: [scheduleEmployeeSchema],
-    status: {
-      type: String,
-      enum: ['draft', 'published', 'archived'],
-      default: 'draft'
-    },
-  
-  // Чи є цей розклад поточним для відображення користувачам
   isCurrent: {
     type: Boolean,
-    default: false
+    default: false,
+    index: true
   },
-  
-  // Дати публікації та архівування
-  publishedAt: Date,
-  archivedAt: Date,
-  
-  // Загальна статистика розкладу
   totalEmployees: {
     type: Number,
     default: 0
@@ -145,109 +90,80 @@ const scheduleSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
-  
-  // Метадані
-  lastModifiedBy: {
+  generalComment: String,
+  createdBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
+    required: true,
+    index: true
   },
-  lastModifiedAt: Date
-}, { 
-  timestamps: true 
-});
+  createdByName: String,
+  lastModifiedBy: mongoose.Schema.Types.ObjectId,
+  employees: [employeeScheduleSchema],
+  publishedAt: Date,
+  createdAt: {
+    type: Date,
+    default: Date.now,
+    index: true
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
+  }
+}, { timestamps: true });
 
-// Індекси для оптимізації пошуку
-scheduleSchema.index({ month: 1, year: 1, role: 1 });
-scheduleSchema.index({ 'employees.employee': 1 });
-scheduleSchema.index({ isCurrent: 1, status: 1 });
-scheduleSchema.index({ createdBy: 1 });
+// Compound indexes for common queries
+scheduleSchema.index({ month: 1, year: 1, role: 1 }, { unique: true });
+scheduleSchema.index({ status: 1, isCurrent: 1 });
+scheduleSchema.index({ createdBy: 1, createdAt: -1 });
+scheduleSchema.index({ role: 1, status: 1, isCurrent: 1 });
 
-// Middleware для автоматичного розрахунку статистики
-scheduleSchema.pre('save', function() {
-  // Розрахунок загальної статистики
-  this.totalEmployees = this.employees.length;
-  this.totalWorkingDays = this.employees.reduce((total, emp) => {
-    return total + emp.days.filter(day => day.shift !== SHIFT_TYPES.OFF).length;
-  }, 0);
-  
-  // Розрахунок статистики для кожного працівника
-  this.employees.forEach(employee => {
-    const workingDays = employee.days.filter(day => day.shift !== SHIFT_TYPES.OFF);
-    employee.totalWorkingDays = workingDays.length;
-    employee.totalDayShifts = employee.days.filter(day => day.shift === SHIFT_TYPES.DAY).length;
-    employee.totalEveningShifts = employee.days.filter(day => day.shift === SHIFT_TYPES.EVENING).length;
-    employee.totalAdditionalShifts = employee.days.filter(day => day.isAdditional).length;
-  });
-
-  this.lastModifiedAt = new Date();
-});
-
-// Статичні методи
-scheduleSchema.statics.getCurrentSchedule = function(role) {
-  return this.findOne({ 
-    role: role, 
-    isCurrent: true, 
-    status: 'published' 
-  }).populate('employees.employee', 'firstName lastName email');
-};
-
-scheduleSchema.statics.getEmployeeSchedule = function(employeeId, month, year) {
-  return this.findOne({
-    month: month,
-    year: year,
-    'employees.employee': employeeId,
-    status: 'published'
-  }, {
-    'employees.$': 1,
-    month: 1,
-    year: 1,
-    title: 1,
-    generalComment: 1
-  });
-};
-
-// Методи екземпляра
+// Methods
 scheduleSchema.methods.publish = function() {
   this.status = 'published';
-  this.publishedAt = new Date();
   this.isCurrent = true;
+  this.publishedAt = new Date();
   return this.save();
 };
 
-scheduleSchema.methods.archive = function() {
-  this.status = 'archived';
-  this.archivedAt = new Date();
-  this.isCurrent = false;
-  return this.save();
+scheduleSchema.statics.getCurrentSchedule = async function(role) {
+  return this.findOne({
+    role,
+    isCurrent: true,
+    status: 'published'
+  });
 };
 
 scheduleSchema.methods.getEmployeePersonalSchedule = function(employeeId) {
-  const employee = this.employees.find(emp => 
-    emp.employee.equals(employeeId));
+  const employeeSchedule = this.employees.find(
+    emp => emp.employee.toString() === employeeId.toString()
+  );
   
-  if (!employee) {
-    return null;
-  }
+  if (!employeeSchedule) return null;
   
   return {
+    _id: this._id,
+    title: this.title,
     month: this.month,
     year: this.year,
-    title: this.title,
-    generalComment: this.generalComment,
-    employee: {
-      name: employee.employeeName,
-      email: employee.employeeEmail,
-      role: employee.employeeRole,
-      days: employee.days,
-      stats: {
-        totalWorkingDays: employee.totalWorkingDays,
-        totalDayShifts: employee.totalDayShifts,
-        totalEveningShifts: employee.totalEveningShifts,
-        totalAdditionalShifts: employee.totalAdditionalShifts
-      }
-    }
+    role: this.role,
+    days: employeeSchedule.days,
+    generalComment: this.generalComment
   };
 };
 
+scheduleSchema.pre('save', function(next) {
+  this.totalEmployees = this.employees.length;
+  
+  let workingDays = 0;
+  this.employees.forEach(emp => {
+    workingDays += emp.days.filter(
+      day => day.shift !== SHIFT_TYPES.OFF
+    ).length;
+  });
+  this.totalWorkingDays = workingDays;
+  
+  next();
+});
+
 export const Schedule = mongoose.model('Schedule', scheduleSchema);
-export { SHIFT_TYPES, SCHEDULE_ROLES };

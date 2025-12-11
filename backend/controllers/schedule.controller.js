@@ -1,6 +1,8 @@
 // backend/controllers/schedule.controller.js
 import { Schedule, SHIFT_TYPES, SCHEDULE_ROLES } from '../models/schedule.model.js';
 import { User, USER_ROLES } from '../models/user.module.js';
+import { auditLog, AuditActions } from '../utils/auditLogger.js';
+import { AppError } from '../middleware/errorHandler.middleware.js';
 
 // Utility functions
 const getDaysInMonth = (month, year) => {
@@ -53,17 +55,15 @@ const generateShiftPattern = (startDate, totalDays, pattern = '3/3') => {
 };
 
 // Create new schedule
-export const createSchedule = async (req, res) => {
+export const createSchedule = async (req, res, next) => {
   try {
     const { month, year, role, title, generalComment, selectedEmployees, customShifts } = req.body;
     const adminId = req.userId;
     
-    // logger.info('Creating schedule', { month, year, role, adminId });
-    
     // Verify admin permissions
     const admin = await User.findById(adminId);
     if (!admin || admin.role !== USER_ROLES.ADMIN) {
-      // logger.warn('Unauthorized schedule creation attempt', { userId: adminId });
+      auditLog(AuditActions.UNAUTHORIZED_ACCESS, adminId, 'Schedule', { action: 'create' });
       return res.status(403).json({
         success: false,
         message: "Тільки менеджери можуть створювати розклади"
@@ -152,7 +152,13 @@ export const createSchedule = async (req, res) => {
     
     await schedule.save();
     
-    // logger.info('Schedule created successfully', { scheduleId: schedule._id, adminId });
+    auditLog(AuditActions.SCHEDULE_CREATED, adminId, 'Schedule', {
+      scheduleId: schedule._id,
+      month,
+      year,
+      role,
+      totalEmployees: schedule.totalEmployees
+    });
     
     res.status(201).json({
       success: true,
@@ -170,12 +176,8 @@ export const createSchedule = async (req, res) => {
     });
     
   } catch (error) {
-    // logger.error('Error creating schedule', { error: error.message, stack: error.stack });
     console.error('Error creating schedule', error);
-    res.status(500).json({
-      success: false,
-      message: "Помилка сервера при створенні розкладу"
-    });
+    next(error);
   }
 };
 
@@ -346,16 +348,14 @@ export const getMyCurrentSchedule = async (req, res) => {
 
 
 // Publish schedule
-export const publishSchedule = async (req, res) => {
+export const publishSchedule = async (req, res, next) => {
   try {
     const { scheduleId } = req.params;
     const adminId = req.userId;
     
-    // logger.info('Publishing schedule', { scheduleId, adminId });
-    
     const admin = await User.findById(adminId);
     if (!admin || admin.role !== USER_ROLES.ADMIN) {
-      // logger.warn('Unauthorized schedule publish attempt', { userId: adminId, scheduleId });
+      auditLog(AuditActions.UNAUTHORIZED_ACCESS, adminId, 'Schedule', { action: 'publish' });
       return res.status(403).json({
         success: false,
         message: "Тільки менеджери можуть публікувати розклади"
@@ -364,23 +364,24 @@ export const publishSchedule = async (req, res) => {
     
     const schedule = await Schedule.findById(scheduleId);
     if (!schedule) {
-      // logger.warn('Schedule not found', { scheduleId });
       return res.status(404).json({
         success: false,
         message: "Розклад не знайдений"
       });
     }
     
-    // Unpublish any existing current schedule for this role
     await Schedule.updateMany(
       { role: schedule.role, isCurrent: true },
       { isCurrent: false }
     );
     
-    // Publish this schedule
     await schedule.publish();
     
-    // logger.info('Schedule published successfully', { scheduleId });
+    auditLog(AuditActions.SCHEDULE_PUBLISHED, adminId, 'Schedule', {
+      scheduleId: schedule._id,
+      month: schedule.month,
+      year: schedule.year
+    });
     
     res.json({
       success: true,
@@ -394,12 +395,8 @@ export const publishSchedule = async (req, res) => {
     });
     
   } catch (error) {
-    // logger.error('Error publishing schedule', { error: error.message });
     console.error('Error publishing schedule', error);
-    res.status(500).json({
-      success: false,
-      message: "Помилка сервера"
-    });
+    next(error);
   }
 };
 

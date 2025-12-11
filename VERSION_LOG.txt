@@ -86,3 +86,6 @@ v4.0.0 beta (2025-12-08)
 + Data validation layer - Missing middleware for input validation
 + Logging system - Only console.error, no persistent logs
 + API documentation - Swagger type
+
+v4.0.1b Bypassed and removed logger 
+v4.1.0b Implemented all changes for 4v level upscale
