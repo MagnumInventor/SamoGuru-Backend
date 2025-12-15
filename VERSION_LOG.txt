@@ -87,5 +87,8 @@ v4.0.0 beta (2025-12-08)
 + Logging system - Only console.error, no persistent logs
 + API documentation - Swagger type
 
-v4.0.1b Bypassed and removed logger 
-v4.1.0b Implemented all changes for 4v level upscale
+v4.0.1b Bypassed and removed logger (2025-12-10)
+v4.1.0b Implemented all changes for 4v level upscale 2025-12-10)
+
+v4.1.1 - npm fixes (2025-12-14)
+v4.1.2 - npm fixes & returned logger.js util (2025-12-14)
