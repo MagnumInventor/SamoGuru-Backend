@@ -4,15 +4,15 @@ export const validationSchemas = {
   // Auth schemas
   signup: Joi.object({
     email: Joi.string().email().required().messages({
-      'string.email': 'Невалідна електронна пошта',
+      'string.email': 'Некоректна електронна пошта',
       'any.required': 'Email обов\'язковий'
     }),
-    firstName: Joi.string().min(2).max(50).required().messages({
-      'string.min': 'Ім\'я повинно містити мінімум 2 символи',
+    firstName: Joi.string().min(3).max(50).required().messages({
+      'string.min': 'Ім\'я повинно містити мінімум 3 символи',
       'any.required': 'Ім\'я обов\'язкове'
     }),
-    password: Joi.string().min(6).required().messages({
-      'string.min': 'Пароль повинен містити мінімум 6 символів',
+    password: Joi.string().min(4).required().messages({
+      'string.min': 'Пароль повинен містити мінімум 4 символів',
       'any.required': 'Пароль обов\'язковий'
     }),
     role: Joi.string().valid('admin', 'waiter', 'helper', 'trainee').default('trainee'),
