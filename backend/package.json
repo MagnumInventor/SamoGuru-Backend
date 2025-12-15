@@ -19,13 +19,16 @@
     "dotenv": "^17.2.3",
     "express": "^4.22.1",
     "express-rate-limit": "^8.2.1",
+    "fs": "^0.0.1-security",
     "helmet": "^8.1.0",
     "joi": "^18.0.2",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^8.20.2",
+    "path": "^0.12.7",
     "resend": "^4.7.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
+    "url": "^0.11.4",
     "winston": "^3.19.0"
   }
 }
