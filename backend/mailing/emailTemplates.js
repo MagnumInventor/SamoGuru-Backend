@@ -111,7 +111,7 @@ export const PASSWORD_RESET_REQUEST_TEMPLATE = `
       
       <!-- Enhanced button -->
       <div style="margin: 32px 0;">
-        <a href="{resetURL}" style="background: #f97316; color: white; padding: 18px 36px; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 18px; display: inline-block; box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3), 0 2px 4px rgba(249, 115, 22, 0.2); transition: all 0.3s ease; position: relative; overflow: hidden;">
+        <a href="www.samoguru.run.place.reset-password" style="background: #f97316; color: white; padding: 18px 36px; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 18px; display: inline-block; box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3), 0 2px 4px rgba(249, 115, 22, 0.2); transition: all 0.3s ease; position: relative; overflow: hidden;">
           <span style="position: relative; z-index: 1;">🔑 Скинути пароль</span>
         </a>
       </div>
@@ -145,7 +145,6 @@ export const PASSWORD_RESET_REQUEST_TEMPLATE = `
     </div>
   </div>
   
-   Footer 
   <div style="text-align: center; margin-top: 40px; padding: 30px;">
     <div style="border-top: 1px solid #e5e7eb; padding-top: 30px;">
       <p style="color: #9ca3af; font-size: 14px; margin: 0 0 12px 0; font-weight: 500;">Це автоматичне повідомлення, будь ласка, не відповідайте на цей лист</p>
